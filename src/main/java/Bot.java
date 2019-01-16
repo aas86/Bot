@@ -14,6 +14,7 @@ import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
+import org.telegram.telegrambots.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.generics.LongPollingBot;
 
 
@@ -21,6 +22,7 @@ import java.util.List;
 
 
 public class Bot extends TelegramLongPollingBot {
+
     private static String BOT_NAME = "Duxa_bot";
     private static String BOT_TOKEN = "672951422:AAFv8ZHzgMQF4owgao-UuqJJoOpTJK4-fsc" /* your bot's token here */;
 
@@ -29,11 +31,15 @@ public class Bot extends TelegramLongPollingBot {
     private static String PROXY_USER = "" /* proxy user */;
     private static String PROXY_PASSWORD = "" /* proxy password */;
 
+
+
     protected Bot(DefaultBotOptions options) {
         super(options);
     }
 
     public static void main(String[] args) {
+        ApiContextInitializer.init();
+        TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
         try {
 
             ApiContextInitializer.init();
@@ -68,11 +74,14 @@ public class Bot extends TelegramLongPollingBot {
         TelegramBotsApi botapi = new TelegramBotsApi();
 
         try {
+            telegramBotsApi.registerBot(new Bot());
+        } catch (TelegramApiRequestException e) {
 
             botapi.registerBot(new Bot());
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+    }
     }*/
 
 
@@ -103,25 +112,55 @@ public class Bot extends TelegramLongPollingBot {
              }
          }
      }*/
+    /**
+     * Метод для приема сообщений.
+     * @param update Содержит сообщение от пользователя.
+     */
     @Override
     public void onUpdateReceived(Update update) {
         String message = update.getMessage().getText();
+        sendMsg(update.getMessage().getChatId().toString(), message);
         sendMsg(update.getMessage(), message);
     }
 
+    /**
+     * Метод для настройки сообщения и его отправки.
+     * @param chatId id чата
+     * @param s Строка, которую необходимот отправить в качестве сообщения.
+     */
+    public synchronized void sendMsg(String chatId, String s) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.enableMarkdown(true);
+        sendMessage.setChatId(chatId);
+        sendMessage.setText(s);
+        try {
+            sendMessage(sendMessage);
+        } catch (TelegramApiException e) {
+           e.printStackTrace();
+        }
     @Override
     public void onUpdatesReceived(List<Update> updates) {
 
     }
 
+    /**
+     * Метод возвращает имя бота, указанное при регистрации.
+     * @return имя бота
+     */
 
     @Override
     public String getBotUsername() {
+        return "BotName";
         return "Duxa_bot";
     }
 
+    /**
+     * Метод возвращает token бота для связи с сервером Telegram
+     * @return token для бота
+     */
     @Override
     public String getBotToken() {
+        return "BotToken";
         return "672951422:AAFv8ZHzgMQF4owgao-UuqJJoOpTJK4-fsc";
     }
 
@@ -129,4 +168,5 @@ public class Bot extends TelegramLongPollingBot {
     public void onClosing() {
 
     }
+
 }
