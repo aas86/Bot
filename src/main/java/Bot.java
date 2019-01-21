@@ -1,5 +1,3 @@
-
-
 import net.aksingh.owmjapis.api.APIException;
 import net.aksingh.owmjapis.core.OWM;
 import net.aksingh.owmjapis.model.CurrentWeather;
@@ -17,10 +15,10 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            SendMessage message = new SendMessage()
-                    .setChatId(update.getMessage().getChatId())
-                    .setText(update.getMessage().getText());
+        SendMessage message = new SendMessage();
+        if (update.hasMessage() && update.getMessage().getText().equals("weather")) {
+
+            message.setChatId(update.getMessage().getChatId());
             OWM owm = new OWM("4a4b55c74080d5b7b7d2ab3f842e7beb");
             try {
                 CurrentWeather cwd = owm.currentWeatherByCityName("Novosibirsk");
@@ -30,19 +28,20 @@ public class Bot extends TelegramLongPollingBot {
                     }
                     if (cwd.hasMainData() && cwd.getMainData().hasTempMax() && cwd.getMainData().hasTempMin()) {
                         System.out.println("Temperature: " + Math.round(cwd.getMainData().getTemp() - 273) + " C");
-
+                        message.setText("Temperature: " + Math.round(cwd.getMainData().getTemp() - 273));
                     }
                 }
             } catch (APIException e) {
                 e.printStackTrace();
             }
-
-            try {
-                System.out.println(update.getMessage().getText());
-                execute(message);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
+        } else if (update.hasMessage() && update.getMessage().hasText()) {
+            message.setChatId(update.getMessage().getChatId()).setText(update.getMessage().getText());
+        }
+        try {
+            System.out.println(update.getMessage().getText());
+            execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
         }
     }
 
