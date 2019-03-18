@@ -8,7 +8,7 @@ public class Main {
     private static String PROXY_HOST = "45.76.187.188";
     private static Integer PROXY_PORT = 21345;
 
-    //https://hidemyna.me/ru/proxy-list/?type=5#list
+    //https://hidemyna.me/ru/proxy-list/?type=5#list The list of working proxy servers
 
     public static void main(String[] args) {
         try {
