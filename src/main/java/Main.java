@@ -5,8 +5,10 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class Main {
-    private static String PROXY_HOST = "198.50.217.202";
-    private static Integer PROXY_PORT = 1080;
+    private static String PROXY_HOST = "45.76.187.188";
+    private static Integer PROXY_PORT = 21345;
+
+    //https://hidemyna.me/ru/proxy-list/?type=5#list
 
     public static void main(String[] args) {
         try {
